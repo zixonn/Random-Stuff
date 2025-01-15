@@ -1,6 +1,7 @@
+import Slider from '@react-native-community/slider';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState} from 'react';
+import { Alert, Button, StyleSheet, Text, View, Share} from 'react-native';
 
 export default function App() {
 
@@ -28,10 +29,29 @@ export default function App() {
     }
   }
 
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: quote.toString(),
+      });
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+};
+
+  const [textSize, setTextSize] = useState(10)
+
   return (
     <View style={styles.container}>
-      <Text style = {styles.quote}>{quote}</Text>
+      <Slider
+        style={{width: "100%"}}
+        minimumValue={10}
+        maximumValue={30}
+        onValueChange={value => setTextSize(value)}
+      />
+      <Text style = {[styles.quote,{fontSize:textSize}]}>{quote}</Text>
       <Button title='Get Quote' onPress={generateQuote} />
+      <Button title = "Share" onPress={handleShare}/>
       <StatusBar style="auto" />
     </View>
   );
@@ -47,6 +67,6 @@ const styles = StyleSheet.create({
   },
   quote:{
     textAlign:"center",
-    marginVertical:"3%"
+    marginVertical:"5%",
   }
 });
